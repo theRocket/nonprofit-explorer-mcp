@@ -17,9 +17,9 @@ rather than querying the hosted search API.
 - **`search_organizations`** — keyword search over org name/alt name/city,
   with optional filters for state, NTEE category, and 501(c) subsection.
   Wraps `GET /search.json`.
-- **`get_organization`** — full detail for one org by EIN: filing history,
-  extracted financials per tax year (revenue, expenses, assets, liabilities),
-  reported officer/key-employee compensation, and links to source PDF/XML
+- **`get_organization`** — full detail for one org by EIN: filing history and
+  extracted financials per tax year (revenue, expenses, assets, liabilities,
+  and *aggregate* officer compensation), plus links to source PDF/XML
   filings. Wraps `GET /organizations/:ein.json`.
 
 The underlying API only documents these two endpoints — no auth, no API key,
@@ -62,6 +62,32 @@ search_organizations(q="Pedal Project", state="WA")
 get_organization(ein=911817868)
 -> full filing history, financials, and officer compensation by year
 ```
+
+## Known limitations
+
+- **No per-person compensation.** `get_organization` returns only an
+  aggregate officer/director compensation figure per tax year (e.g.
+  `compnsatncurrofcr` for full Form 990 filers, `pct_compnsatncurrofcr` for
+  990-EZ filers). It does not return the named officer/key-employee
+  compensation table (Part IV of the 990-EZ, or Schedule J / Part VII of the
+  full 990) — that breakdown is rendered by the ProPublica *website* from the
+  underlying filing XML, but isn't in this API's JSON response. To get a named
+  breakdown today you'd need to fetch and parse the filing's XML/PDF
+  separately (e.g. with IRSx).
+- **Regular employee wages are invisible.** For 990-EZ filers, total
+  salary/wage expense appears only as a lump-sum line in Part I (not
+  surfaced by this API at all — you'd have to read the source PDF/XML), with
+  no per-employee detail. For full 990 filers, only officers/directors/key
+  employees above the reporting threshold are itemized; rank-and-file pay
+  isn't disclosed anywhere in the filing.
+- **Extracted data lags the live site.** A newly filed return (e.g. filed
+  mid-year) may show up on the ProPublica website before this API's
+  `filings_with_data` array is backfilled with its extracted figures.
+- **Filing/PDF downloads aren't included.** `pdf_url` values returned by the
+  API are gated behind ProPublica's bot protection and can't be fetched with
+  a plain HTTP client (they return an interstitial "Security Check" page
+  instead of the PDF) — only the API's own JSON endpoints are reliably
+  scriptable.
 
 ## Development
 
