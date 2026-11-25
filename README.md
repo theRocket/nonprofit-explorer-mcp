@@ -7,8 +7,9 @@ org-level financial/compensation detail directly, instead of being hand-fed
 curl commands or screen-scraped pages.
 
 This is an independent, unofficial project — not affiliated with or endorsed
-by ProPublica. It's a thin wrapper around their public, unauthenticated API.
-See [propublica/990-xml-reader](https://github.com/propublica/990-xml-reader)
+by [ProPublica](https://github.com/propublica). It's a thin wrapper around
+their public, unauthenticated API. See
+[propublica/990-xml-reader](https://github.com/propublica/990-xml-reader)
 (IRSx) for a complementary tool that parses bulk raw IRS XML 990 filings
 rather than querying the hosted search API.
 
