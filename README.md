@@ -88,6 +88,15 @@ get_organization(ein=911817868)
   a plain HTTP client (they return an interstitial "Security Check" page
   instead of the PDF) — only the API's own JSON endpoints are reliably
   scriptable.
+- **990-N ("e-Postcard") filers return no financial data at all.**
+  Organizations with gross receipts under $50,000/year can file the minimal
+  Form 990-N instead of a 990/990-EZ, which discloses no revenue, expense,
+  asset, or compensation figures — just a confirmation that the org still
+  qualifies. For these orgs, `get_organization` returns empty
+  `filings_with_data` and `filings_without_data` arrays with no indication of
+  *why* (as opposed to the org simply having no filings on record at all).
+  The ProPublica website distinguishes this case ("Years with postcard
+  filings (no financial data)"); this API does not.
 
 ## Development
 
